@@ -1,0 +1,265 @@
+# Dicionário (dict): Armazena os dados dos eventos. Chave é o ID do evento.
+# Estrutura: {
+#   id_evento: {
+#       'nome': str,
+#       'local': str,
+#       'vagas': int,
+#       'habilidades_requeridas': set,  # Conjunto (set) para garantir unicidade
+#       'inscricoes': list,            # Lista (list) para mutabilidade das inscrições
+#       'data_fixa': tuple             # Tupla (tuple) para informações fixas
+#   }
+# }
+eventos = {}
+
+# Tupla (tuple): Informações Fixas do Sistema (Imutabilidade)
+INFO_SISTEMA = ("SysEvent v5.0 Console (Sem Login)", "Desenvolvido para Estrutura de Dados")
+
+# Variável global para o próximo ID de evento
+proximo_id_evento = 1
+
+# -----------------------------------------------------------------------------
+# 2. FUNÇÕES AUXILIARES
+# -----------------------------------------------------------------------------
+
+def limpar_tela():
+    """Simula a limpeza da tela do console."""
+    print("\n" * 50)
+
+def exibir_cabecalho(titulo):
+    """Exibe um cabeçalho formatado."""
+    limpar_tela()
+    print("=" * 50)
+    print(f"  {titulo.upper()}")
+    print("=" * 50)
+
+def obter_entrada_int(prompt):
+    """Função auxiliar para obter entrada inteira."""
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Entrada inválida. Digite um número inteiro.")
+
+def adicionar_evento_logica(nome, local, vagas_str, habilidades_str, data_hora_str):
+    """Lógica para adicionar um evento."""
+    global proximo_id_evento
+    
+    try:
+        vagas = int(vagas_str)
+        if vagas <= 0:
+            return False, "O número de vagas deve ser positivo."
+    except ValueError:
+        return False, "Número de vagas inválido."
+
+    if not nome or not local:
+        return False, "Nome e local são obrigatórios."
+
+    # Uso de Conjunto (set) para Habilidades Requeridas
+    habilidades = {h.strip().upper() for h in habilidades_str.split(',') if h.strip()}
+
+    # Uso de Tupla (tuple) para Data/Hora Fixa
+    data_fixa = tuple(data_hora_str.split())
+
+    # Criação do Dicionário do Evento
+    novo_evento = {
+        'nome': nome,
+        'local': local,
+        'vagas': vagas,
+        'habilidades_requeridas': habilidades,
+        'inscricoes': [],  # Lista (list) de inscrições
+        'data_fixa': data_fixa
+    }
+    
+    eventos[proximo_id_evento] = novo_evento
+    id_criado = proximo_id_evento
+    proximo_id_evento += 1
+    return True, f"Evento '{nome}' adicionado com sucesso! ID: {id_criado}"
+
+def inscrever_participante_logica(id_evento, nome, email):
+    """Lógica para inscrever um participante."""
+    try:
+        id_evento = int(id_evento)
+    except ValueError:
+        return False, "ID do evento inválido."
+
+    evento = eventos.get(id_evento)
+    
+    if evento:
+        if len(evento['inscricoes']) >= evento['vagas']:
+            return False, "Inscrições encerradas: todas as vagas foram preenchidas."
+
+        # Participante é um Dicionário
+        novo_participante = {
+            'nome': nome,
+            'email': email
+        }
+        
+        # Adiciona o Dicionário do participante à Lista de inscrições
+        evento['inscricoes'].append(novo_participante)
+        return True, f"{nome}, sua inscrição no evento '{evento['nome']}' foi realizada com sucesso!"
+    else:
+        return False, f"Erro: Evento com ID {id_evento} não encontrado."
+
+# -----------------------------------------------------------------------------
+# 3. FUNÇÕES DE GESTÃO DE EVENTOS
+# -----------------------------------------------------------------------------
+
+def adicionar_evento():
+    """Adiciona um novo evento."""
+    exibir_cabecalho("Adicionar Novo Evento")
+    
+    nome = input("Nome do Evento: ")
+    local = input("Local do Evento: ")
+    vagas_str = input("Número de Vagas: ")
+    habilidades_str = input("Habilidades Requeridas (separadas por vírgula): ")
+    data_hora_str = input("Data e Hora (ex: DD/MM/YYYY HH:MM): ")
+    
+    sucesso, mensagem = adicionar_evento_logica(nome, local, vagas_str, habilidades_str, data_hora_str)
+    
+    print("\n" + "=" * 50)
+    print(mensagem)
+    print("=" * 50)
+
+def listar_eventos():
+    """Lista todos os eventos."""
+    exibir_cabecalho("Lista de Eventos")
+    
+    if not eventos:
+        print("Nenhum evento cadastrado.")
+        return
+    
+    print(f"{'ID':<5} | {'Nome':<30} | {'Local':<20} | {'Vagas':<10} | {'Data/Hora':<20}")
+    print("-" * 90)
+    
+    for id_evento, evento in eventos.items():
+        vagas_ocupadas = len(evento['inscricoes'])
+        vagas_restantes = evento['vagas'] - vagas_ocupadas
+        print(f"{id_evento:<5} | {evento['nome']:<30} | {evento['local']:<20} | {vagas_ocupadas}/{evento['vagas']:<8} | {' '.join(evento['data_fixa']):<20}")
+
+def detalhar_evento():
+    """Detalha um evento específico."""
+    listar_eventos()
+    
+    if not eventos:
+        input("\nPressione Enter para continuar...")
+        return
+
+    id_evento = input("\nDigite o ID do evento para detalhar: ")
+    try:
+        id_evento = int(id_evento)
+    except ValueError:
+        print("ID do evento inválido.")
+        return
+
+    evento = eventos.get(id_evento)
+    
+    if not evento:
+        print(f"Erro: Evento com ID {id_evento} não encontrado.")
+        return
+
+    exibir_cabecalho(f"Detalhes do Evento #{id_evento}")
+    
+    vagas_ocupadas = len(evento['inscricoes'])
+    vagas_restantes = evento['vagas'] - vagas_ocupadas
+    
+    print(f"Nome: {evento['nome']}")
+    print(f"Local: {evento['local']}")
+    print(f"Data/Hora (Tupla): {' '.join(evento['data_fixa'])}")
+    print(f"Vagas: {evento['vagas']} (Restantes: {vagas_restantes})")
+    
+    # Uso de Conjunto (set)
+    habilidades_str = ", ".join(evento['habilidades_requeridas'])
+    print(f"Habilidades Requeridas (Conjunto): {habilidades_str if habilidades_str else 'Nenhuma'}")
+    
+    print("\n--- Participantes Inscritos (Lista) ---")
+    if not evento['inscricoes']:
+        print("Nenhum participante inscrito.")
+    else:
+        for i, participante in enumerate(evento['inscricoes']):
+            # Participante é um Dicionário
+            print(f"{i+1}. Nome: {participante['nome']}, Email: {participante['email']}")
+
+def inscrever_participante():
+    """Inscreve um participante em um evento."""
+    listar_eventos()
+    
+    if not eventos:
+        input("\nPressione Enter para continuar...")
+        return
+
+    id_evento = input("\nDigite o ID do evento para se inscrever: ")
+    try:
+        id_evento = int(id_evento)
+    except ValueError:
+        print("ID do evento inválido.")
+        return
+
+    evento = eventos.get(id_evento)
+    if not evento:
+        print(f"Erro: Evento com ID {id_evento} não encontrado.")
+        return
+
+    nome = input("Seu Nome Completo: ")
+    email = input("Seu Email: ")
+    
+    sucesso, mensagem = inscrever_participante_logica(id_evento, nome, email)
+    
+    print("\n" + "=" * 50)
+    print(mensagem)
+    print("=" * 50)
+
+# -----------------------------------------------------------------------------
+# 4. MENU PRINCIPAL E INICIALIZAÇÃO
+# -----------------------------------------------------------------------------
+
+def inicializar_dados():
+    """Adiciona dados iniciais para demonstração."""
+    
+    # Adiciona um evento de teste para facilitar a demonstração
+    adicionar_evento_logica(
+        "Workshop de Estrutura de Dados",
+        "Laboratório de Programação",
+        "30",
+        "Python, Algoritmos, Estrutura de Dados",
+        "15/12/2025 09:00"
+    )
+    
+    adicionar_evento_logica(
+        "Palestra de Engenharia de Software",
+        "Auditório Principal",
+        "50",
+        "UML, Design Patterns, Metodologias",
+        "20/12/2025 14:00"
+    )
+
+def menu_principal():
+    """Menu principal do programa (sem login)."""
+    while True:
+        exibir_cabecalho(INFO_SISTEMA[0])
+        print("1. Adicionar Evento (Organizador)")
+        print("2. Listar Eventos")
+        print("3. Detalhar Evento (e ver inscritos)")
+        print("4. Inscrever Participante")
+        print("5. Sair")
+        print("-" * 50)
+        
+        escolha = input("Escolha uma opção: ")
+        
+        if escolha == '1':
+            adicionar_evento()
+        elif escolha == '2':
+            listar_eventos()
+        elif escolha == '3':
+            detalhar_evento()
+        elif escolha == '4':
+            inscrever_participante()
+        elif escolha == '5':
+            print("Saindo do sistema. Até logo!")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+        input("\nPressione Enter para continuar...")
+
+if __name__ == '__main__':
+    inicializar_dados()
+    menu_principal()

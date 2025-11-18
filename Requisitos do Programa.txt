@@ -1,0 +1,58 @@
+•Requisitos Funcionais:
+
+Gestão do Evento: Permitir o cadastro completo do evento (nome, descrição, data, hora, local, categoria, capacidade). 
+
+Possibilitar a gestão de múltiplos tipos de ingressos/inscrições (lotes, preços, descontos, códigos promocionais). 
+
+Oferecer um módulo de agenda/programação para criar e gerenciar sessões, palestrantes/artistas e horários.
+ 
+Permitir o gerenciamento de fornecedores e recursos (contratos, pagamentos, inventário de equipamentos). 
+
+Comunicação e Marketing: Incluir ferramentas de e-mail marketing e notificações para comunicar-se com inscritos e interessados. 
+
+Oferecer a criação de uma página/website personalizável para o evento dentro do sistema. 
+
+Financeiro e Vendas: Integrar com diversos meios de pagamento (cartão de crédito, boleto, PIX). 
+
+Gerar relatórios detalhados de vendas, faturamento, inscritos e engajamento. 
+
+Check-in e Credenciamento: Oferecer um sistema de check-in rápido (via QR Code ou lista) no dia do evento, inclusive via aplicativo móvel. 
+
+Permitir a gestão de crachás/credenciais (design, impressão). 
+
+Para o Cliente (Participante)
+| Categoria | Requisito Funcional (O que o sistema faz) 
+
+ Inscrição e Compra : Permitir a navegação e pesquisa de eventos por filtros (data, local, categoria). 
+
+Oferecer um processo de registro/compra de ingresso simples, rápido e seguro. 
+
+Fornecer um acesso fácil ao ingresso digital (QR Code, e-mail, área do usuário). 
+
+Informação e Interação: Apresentar a programação completa do evento de forma clara. 
+
+Enviar notificações e lembretes importantes sobre o evento (data, mudanças de horário). 
+
+Pós-Evento : Possibilitar o envio de feedback e avaliações sobre o evento e sessões. 
+
+Oferecer o download de materiais e certificados de participação. 
+
+ •Requisitos Não Funcionais 
+
+Usabilidade : A interface, tanto para o organizador quanto para o cliente, deve ser clara e intuitiva, permitindo que qualquer pessoa complete suas tarefas sem treinamento extenso. 
+
+Desempenho |: Tempo de Resposta | O sistema deve ter um tempo de resposta rápido, mesmo em picos de acesso (ex: abertura de vendas ou check-in). 
+
+Escalabilidade | Deve ser capaz de suportar um grande aumento no número de usuários (dezenas a milhares) e eventos simultâneos sem falhas. 
+
+Segurança | Proteção de Dados : Garantir a segurança e privacidade dos dados de todos os usuários (criptografia, autenticação forte, conformidade com a legislação, como a LGPD no Brasil).
+
+Processamento de Pagamento Seguro | O módulo de pagamento deve seguir os padrões de segurança (ex: PCI DSS) para proteger as transações financeiras.
+
+Disponibilidade:  O sistema deve estar disponível 24/7 (com uma meta de 99,9% de uptime), com mecanismos de backup e recuperação de desastres. 
+
+Tolerância a Falhas | Em caso de falha de internet (especialmente no local do evento), o sistema de check-in deve operar offline temporariamente e sincronizar os dados depois. 
+
+| Portabilidade/Compatibilidade | RNF8: Deve ser totalmente responsivo, funcionando perfeitamente em diferentes dispositivos (desktop, tablet, celular) e navegadores. 
+
+Suporte a Múltiplas Moedas/Idiomas | Se aplicável a eventos internacionais, deve oferecer suporte a diferentes moedas e idiomas.
