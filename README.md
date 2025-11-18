@@ -1,2 +1,2 @@
-# SysEvent-Manual
-Manual de uso do projeto SysEvent
+# SysEvent-Project
+Projeto SysEvent com Manual, Código e Requisitos.
